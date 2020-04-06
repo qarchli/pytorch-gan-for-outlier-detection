@@ -24,7 +24,7 @@ if __name__ == '__main__':
         data_size = data_x.shape[0]
         batch_size = min(500, data_size)
         stop = 0
-        epochs = args.stop_epochs * 2
+        epochs = args.stop_epochs * 3
         train_history = defaultdict(list)
 
         # create tensors from np array
