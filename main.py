@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
-from collections import defaultdict, OrderedDict, namedtuple
+from collections import defaultdict, namedtuple
+from datetime import datetime
 
 import torch
 import torch.optim as optim
@@ -134,17 +135,25 @@ if __name__ == '__main__':
                 train_history['auc'].append(AUC)
 
         # construct a string from arguments to identitfy the current run
-        # transform args to OrderedDict
-        args_dict = OrderedDict(vars(args))
+        # construct the run ID from time
+        year = str(datetime.now().year)
+        month = '{:02d}'.format(datetime.now().month)
+        day = '{:02d}'.format(datetime.now().day)
+        hour = str(datetime.now().hour)
+        minute = str(datetime.now().minute)
+        current_run_id = year + month + day + hour + minute
+
+        # transform args to dict
+        args_dict = vars(args)
 
         # remove data path from args
         args_dict.pop('path')
 
         # construct a namedtuple
-        Run = namedtuple('Run', args_dict.keys())
+        Run = namedtuple('Run', ['run_id', *args_dict.keys()])
 
         # construct the id of current run
-        current_run = Run(*args_dict.values())
+        current_run = Run(current_run_id, *args_dict.values())
 
         # plot and save summary plot
         plot(train_history, current_run)
