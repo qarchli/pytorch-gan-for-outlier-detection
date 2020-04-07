@@ -52,9 +52,7 @@ def plot(train_history, run, save_dir='plots/'):
 
     plt.plot(x, dy, color='blue', label='Discriminator Loss')
     plt.plot(x, gy, color='red', label='Generator Loss')
-    plt.plot(x, aucy, color='yellow', linewidth='3', label='ROC AUC')
-    # plot the final value of AUC
-    plt.axhline(y=aucy[-1], c='k', ls='--', label='AUC={}'.format(round(aucy[-1], 4)))
+    plt.plot(x, aucy, color='yellow', linewidth='3', label='ROC, AUC={}'.format(round(aucy[-1], 4)))
 
     plt.legend(loc='best')
     plt.savefig(save_dir + str(run) + '.png')

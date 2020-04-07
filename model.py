@@ -26,7 +26,7 @@ class Generator(nn.Module):
     def _identity_init(self, m):
         if type(m) == nn.Linear:
             nn.init.eye_(m.weight)
-            m.bias.data.fill_(1e-5)
+            m.bias.data.fill_(1.e-5)
 
     def save(self, run):
         print('Saving {} to disk..'.format(self.__class__.__name__))
