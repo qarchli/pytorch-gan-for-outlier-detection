@@ -16,7 +16,12 @@ train = True  # to add an early stopping condition if necessary
 args = parse_args()
 data_x, data_y, data_id = load_data(args.path)
 
+# specify the device on which the model will be trained
+TRAINING_ON_GPU = torch.cuda.is_available()
+device = torch.device("cuda:0" if TRAINING_ON_GPU else "cpu")
+
 print('The dimension of the training data: {}*{}'.format(data_x.shape[0], data_x.shape[1]))
+print('GPU available: ', TRAINING_ON_GPU)
 
 if train:
     latent_size = data_x.shape[1]
@@ -27,8 +32,8 @@ if train:
     train_history = defaultdict(list)
 
     # create tensors from np array
-    data_x_tensor = torch.Tensor(data_x)
-    data_y_tensor = torch.Tensor(data_y)
+    data_x_tensor = torch.Tensor(data_x).to(device)
+    data_y_tensor = torch.Tensor(data_y).to(device)
 
     # Create a tensor dataset
     train_set = torch.utils.data.TensorDataset(data_x_tensor,
@@ -45,12 +50,14 @@ if train:
     discriminator = Discriminator(latent_size, data_size)
     discriminator_optim = optim.SGD(discriminator.parameters(), lr=args.lr_d, dampening=args.decay, momentum=args.momentum)
     discriminator_criterion = F.binary_cross_entropy
+    discriminator.to(device)  # send the network to the specified device
     print(discriminator)
 
     # Create generator
     generator = Generator(latent_size)
     generator_optim = optim.SGD(generator.parameters(), lr=args.lr_g, dampening=args.decay, momentum=args.momentum)
     generator_criterion = F.binary_cross_entropy
+    generator.to(device)
     print(generator)
 
     # Start training epochs
@@ -64,7 +71,7 @@ if train:
             # Generate noise
             noise_size = batch_size
             noise = np.random.uniform(0, 1, (int(noise_size), latent_size))
-            noise = torch.tensor(noise, dtype=torch.float32)
+            noise = torch.tensor(noise, dtype=torch.float32).to(device)
 
             # Get training data
             data_batch, _ = data
@@ -75,7 +82,7 @@ if train:
             # Concatenate real data to generated data
             # X = torch.tensor(np.concatenate([data_batch, generated_data]), dtype=torch.float32)
             X = torch.cat((data_batch, generated_data))
-            Y = torch.tensor(np.array([1] * batch_size + [0] * int(noise_size)), dtype=torch.float32).unsqueeze(dim=1)
+            Y = torch.tensor(np.array([1] * batch_size + [0] * int(noise_size)), dtype=torch.float32).unsqueeze(dim=1).to(device)
 
             # Train discriminator
             # enable training mode
@@ -95,7 +102,7 @@ if train:
 
             # Train generator
             # create fake labels
-            trick = torch.tensor(np.array([1] * noise_size), dtype=torch.float32).unsqueeze(dim=1)
+            trick = torch.tensor(np.array([1] * noise_size), dtype=torch.float32).unsqueeze(dim=1).to(device)
             discriminator.eval()  # freeze the discriminator
             if stop == 0:
                 generator.train()  # enable training mode for the generator
@@ -120,6 +127,8 @@ if train:
         # Detection result
         discriminator.eval()
         p_value = discriminator(data_x_tensor)
+        if TRAINING_ON_GPU:
+            p_value = p_value.cpu()
         p_value = pd.DataFrame(p_value.detach().numpy())
         data_y = pd.DataFrame(data_y)
         result = np.concatenate([p_value, data_y], axis=1)

@@ -38,7 +38,9 @@ python main.py
 Learning curves as well as the model's weights are saved respectively in `./plots` and `./chkpt`, every `plot_every` epochs, to track the training process. The `RunBuilder` class takes care of generating a unique identifier for each run based on the time it was executed on.
 
 ## TODO
-- Add the possibility of hyper-parameters tuning.
+- [] Add the possibility of hyper-parameters tuning.
+- [] TensorBoard support.
+- [x] GPU support.
 
 ## References
 
