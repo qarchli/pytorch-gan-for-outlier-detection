@@ -133,8 +133,7 @@ if train:
         for _ in train_loader:
             train_history['auc'].append(AUC)
 
-        plot_every = 2
-        if (epoch + 1) % plot_every == 0:
+        if (epoch + 1) % args.plot_every == 0:
 
             # generate a run id
             current_run = RunBuilder.generate_run(args)

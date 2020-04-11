@@ -10,7 +10,8 @@ if __name__ == '__main__':
                        lr_g=0.0004,
                        batch_size=64,
                        decay=1e-6,
-                       momentum=0.9)
+                       momentum=0.9,
+                       plot_every=2)
 
     # creating the command
     command = 'python train.py'

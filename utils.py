@@ -26,6 +26,8 @@ def parse_args():
                         help='Decay.')
     parser.add_argument('--momentum', type=float, default=0.9,
                         help='Momentum.')
+    parser.add_argument('--plot_every', type=int, default=10,
+                        help='Learning curves plotting frequency.')
     return parser.parse_args()
 
 
