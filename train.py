@@ -1,14 +1,14 @@
 import numpy as np
 import pandas as pd
-from collections import defaultdict, namedtuple
-from datetime import datetime
+from collections import defaultdict
+import os
 
 import torch
 import torch.optim as optim
 import torch.nn.functional as F
 from sklearn import metrics
 
-from utils import parse_args, load_data, plot
+from utils import parse_args, load_data, plot, RunBuilder
 from model import Discriminator, Generator
 
 
@@ -59,7 +59,7 @@ if train:
 
         # go over batches of data in the train_loader
         for i, data in enumerate(train_loader):
-            print('\tTesting batch_index {}/{}'.format(i + 1, len(train_loader)))
+            print('\tTesting for epoch {} batch_index {}/{}'.format(epoch + 1, i + 1, len(train_loader)))
 
             # Generate noise
             noise_size = batch_size
@@ -133,26 +133,36 @@ if train:
         for _ in train_loader:
             train_history['auc'].append(AUC)
 
-    # construct a string from arguments to identitfy the current run
-    # construct the run ID from time
-    year = str(datetime.now().year)
-    month = '{:02d}'.format(datetime.now().month)
-    day = '{:02d}'.format(datetime.now().day)
-    hour = str(datetime.now().hour)
-    minute = str(datetime.now().minute)
-    current_run_id = year + month + day + hour + minute
+        plot_every = 2
+        if (epoch + 1) % plot_every == 0:
 
-    # transform args to dict
-    args_dict = vars(args)
+            # generate a run id
+            current_run = RunBuilder.generate_run(args)
 
-    # remove data path from args
-    args_dict.pop('path')
+            # plot and save
+            plot(train_history, current_run)
 
-    # construct a namedtuple
-    Run = namedtuple('Run', ['run_id', *args_dict.keys()])
+            # save generator and discriminator weights
+            discriminator.save(current_run)
+            generator.save(current_run)
 
-    # construct the id of current run
-    current_run = Run(current_run_id, *args_dict.values())
+            # remove previous plots and weights
+            try:
+                previous_run
+            except NameError:
+                pass
+            else:
+                try:
+                    os.remove('./plots/' + str(previous_run) + '.png')
+                    os.remove(generator.checkpoint_dir + str(previous_run))
+                    os.remove(discriminator.checkpoint_dir + str(previous_run))
+                except OSError:
+                    pass
+            # update the previous run
+            previous_run = current_run
+
+    # generate a run id
+    current_run = RunBuilder.generate_run(args)
 
     # plot and save summary plot
     plot(train_history, current_run)

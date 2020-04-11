@@ -2,6 +2,9 @@ import argparse
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+from datetime import datetime
+import copy
+from collections import namedtuple
 
 
 def parse_args():
@@ -59,3 +62,40 @@ def plot(train_history, run, save_dir='plots/'):
     plt.legend(loc='best')
     plt.savefig(save_dir + str(run) + '.png')
     plt.show()
+
+
+class RunBuilder:
+    """
+    Class that builds runs from parameters' OrderedDict
+    """
+    @staticmethod
+    def generate_run(args):
+        # construct a string from arguments to identitfy the current run
+        # construct the run ID from time
+        year = str(datetime.now().year)
+        month = '{:02d}'.format(datetime.now().month)
+        day = '{:02d}'.format(datetime.now().day)
+        hour = '{:02d}'.format(datetime.now().hour)
+        minute = '{:02d}'.format(datetime.now().minute)
+        second = '{:02d}'.format(datetime.now().second)
+        current_run_id = year + month + day + hour + minute + second
+
+        # transform args to dict
+        args_dict = vars(copy.deepcopy(args))
+
+        # remove data path from args: the / raise errors
+        data_path = args_dict.pop('path')
+
+        # we are going to keep just the dataset name
+        dataset_name = data_path[data_path.rfind('/') + 1:]
+
+        # remove extensions if any
+        dataset_name = dataset_name.split('.')[0] if '.' in dataset_name else dataset_name
+
+        # construct a namedtuple
+        Run = namedtuple('Run', ['run_id', 'dataset', *args_dict.keys()])
+
+        # construct the id of current run
+        current_run = Run(current_run_id, dataset_name, *args_dict.values())
+
+        return current_run
