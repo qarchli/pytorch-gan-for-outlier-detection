@@ -22,7 +22,7 @@ if __name__ == '__main__':
     if train:
         latent_size = data_x.shape[1]
         data_size = data_x.shape[0]
-        batch_size = min(500, data_size)
+        batch_size = min(args.batch_size, data_size)
         stop = 0
         epochs = args.stop_epochs * 3
         train_history = defaultdict(list)

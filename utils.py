@@ -9,7 +9,7 @@ def parse_args():
     retrieving arguments from the command line.
     """
     parser = argparse.ArgumentParser(description="Run SO-GAAL.")
-    parser.add_argument('--path', nargs='?', default='data/onecluster',
+    parser.add_argument('--path', nargs='?', default='data/LHC_data.csv',
                         help='Input data path.')
     parser.add_argument('--stop_epochs', type=int, default=20,
                         help='Stop training generator after stop_epochs.')
@@ -17,6 +17,8 @@ def parse_args():
                         help='Learning rate of discriminator.')
     parser.add_argument('--lr_g', type=float, default=0.0001,
                         help='Learning rate of generator.')
+    parser.add_argument('--batch_size', type=int, default=64,
+                        help='Mini-batch size.')
     parser.add_argument('--decay', type=float, default=1e-6,
                         help='Decay.')
     parser.add_argument('--momentum', type=float, default=0.9,
