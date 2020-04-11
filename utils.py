@@ -68,10 +68,11 @@ def plot(train_history, run, save_dir='plots/'):
 
 class RunBuilder:
     """
-    Class that builds runs from parameters' OrderedDict
+    Class that builds an id for each run
+    (and generate runs from combination of hyperparams for tuning purposes: === TODO === )
     """
     @staticmethod
-    def generate_run(args):
+    def generate_run_id(args):
         # construct a string from arguments to identitfy the current run
         # construct the run ID from time
         year = str(datetime.now().year)

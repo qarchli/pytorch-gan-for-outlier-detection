@@ -136,7 +136,7 @@ if train:
         if (epoch + 1) % args.plot_every == 0:
 
             # generate a run id
-            current_run = RunBuilder.generate_run(args)
+            current_run = RunBuilder.generate_run_id(args)
 
             # plot and save
             plot(train_history, current_run)
@@ -161,7 +161,7 @@ if train:
             previous_run = current_run
 
     # generate a run id
-    current_run = RunBuilder.generate_run(args)
+    current_run = RunBuilder.generate_run_id(args)
 
     # plot and save summary plot
     plot(train_history, current_run)

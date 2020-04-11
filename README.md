@@ -5,26 +5,36 @@ This is the PyTorch Implementation of this paper:
 
 This repository also corresponds to the code for the post I have written on Generative Adversarial Networks for Unsupervised Outlier Detection (link to the post will be added later).
 
-## Usage
-
-Once dependencies are installed, you can run this command to train the model.
+## Dependecies
+Install the requirements using this command:
 
 ```bash
-python main.py --path data/onecluster --stop_epochs 1000 --lr_d 0.01 --lr_g 0.0001 --decay 1e-6 --momentum 0.9
+sudo pip install -r requirements.txt
 ```
 
-Running `python main.py -h` get you more details about the arguments:
+## Usage
+
+Once dependencies are installed, you can open `main.py` and specify the following arguments :
 
 ```bash
--h, --help            		show this help message and exit
 --path [PATH]         		Input data path.
---k K                 		Number of sub_generator.
 --stop_epochs STOP_EPOCHS   Stop training generator after stop_epochs.
 --lr_d LR_D           		Learning rate of discriminator.
 --lr_g LR_G           		Learning rate of generator.
+--batch_size BATCH_SIZE     The training batch size.
 --decay DECAY         		Decay.
 --momentum MOMENTUM   		Momentum.
+--plot_every PLOT_EVERY     Learning curves plotting frequency.
 ```
+then run this command to train the model:
+
+```bash
+python main.py
+```
+
+## ...
+
+Learning curves as well as the model's weights are saved respectively in `./plots` and `./chkpt`, every `plot_every` epochs, to track the training process. The `RunBuilder` class takes care of generating a unique identifier for each run based on the time it was executed on. As a TODO, I have add the possibility of hyper-parameters tuning.
 
 ## References
 
