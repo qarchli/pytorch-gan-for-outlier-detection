@@ -6,7 +6,7 @@ This is the PyTorch Implementation of this paper:
 
 [Generative Adversarial Active Learning for Unsupervised Outlier Detection](https://arxiv.org/abs/1809.10816) by Yezheng Liu, Zhe Li, Chong Zhou, Yuanchun Jiang, Jianshan Sun, Meng Wang and Xiangnan He.
 
-This repository also corresponds to the code for the post I have written on Generative Adversarial Networks for Unsupervised Outlier Detection (link to the post will be added later).
+This repository also corresponds to the code for the post I have written on [Generative Adversarial Networks for Unsupervised Outlier Detection](https://qarchli.github.io/2020-04-12-gans-for-outlier-detection/).
 
 ## Dependencies
 
